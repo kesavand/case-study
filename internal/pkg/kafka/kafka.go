@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Shopify/sarama"
+	"github.com/kesavand/case-study/internal/pkg/datahandler"
 )
 
 //kafkahndlr
@@ -18,9 +19,8 @@ type Producer struct {
 //Consumer logic for sarama library
 type Consumer struct {
 	saramaCg   sarama.ConsumerGroup
-	HandleFunc func(msg string) error
-	ID         string
-	topics     string
+	HandleFunc func(msg string, dh datahandler.DataHandlerInterface) error
+	dh         datahandler.DataHandlerInterface
 }
 
 //Options to configure consumption and Produceing Options
@@ -40,7 +40,7 @@ type kafkaProducer interface {
 }
 
 type kafkaConsumer interface {
-	Read(ctx context.Context, topics string, errChn chan error, handleMessage func(msg string) error) error
+	Read(ctx context.Context, topics string, errChn chan error) error
 }
 
 //NewKafkaHndlr constructor
@@ -65,7 +65,7 @@ func NewKafkaProducer(broker string) (kafkaProducer, error) {
 }
 
 //NewKafkaHndlr constructor
-func NewKafkaConsumer(broker string) (kafkaConsumer, error) {
+func NewKafkaConsumer(broker string, dh datahandler.DataHandlerInterface, handleMessage func(msg string, dh datahandler.DataHandlerInterface) error) (kafkaConsumer, error) {
 	var err error
 	// Consumer configuration
 	conf := sarama.NewConfig()
@@ -83,7 +83,9 @@ func NewKafkaConsumer(broker string) (kafkaConsumer, error) {
 	}
 
 	kc := &Consumer{
-		saramaCg: cg,
+		saramaCg:   cg,
+		dh:         dh,
+		HandleFunc: handleMessage,
 	}
 
 	return kc, nil
@@ -130,12 +132,13 @@ func (kh Producer) Produce(ctx context.Context, topic string, payload string) (e
 }
 
 //Read kafka msgs
-func (kh *Consumer) Read(ctx context.Context, topics string, errrChn chan error, handleMessage func(msg string) error) error {
-	consumer := &Consumer{
-		HandleFunc: handleMessage,
-		//	ID:         strconv.Itoa(0),
-	}
-
+func (kh *Consumer) Read(ctx context.Context, topics string, errrChn chan error) error {
+	/*
+		consumer := &Consumer{
+			HandleFunc: handleMessage,
+			//	ID:         strconv.Itoa(0),
+		}
+	*/
 	go func() {
 		for err := range kh.saramaCg.Errors() {
 			errrChn <- err
@@ -144,7 +147,7 @@ func (kh *Consumer) Read(ctx context.Context, topics string, errrChn chan error,
 
 	go func() {
 		for {
-			if err := kh.saramaCg.Consume(ctx, strings.Split(topics, ","), consumer); err != nil {
+			if err := kh.saramaCg.Consume(ctx, strings.Split(topics, ","), kh); err != nil {
 				fmt.Printf("error in reading kafka message %v\n, err", err)
 			}
 			// check if context was canceled, signaling that the consumer should stop
@@ -172,7 +175,8 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	var failedAttempts = 0
 	for msg := range claim.Messages() {
 		log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(msg.Value), msg.Timestamp, msg.Topic)
-		err := consumer.HandleFunc(string(msg.Value))
+
+		err := consumer.HandleFunc(string(msg.Value), consumer.dh)
 		if err != nil {
 			failedAttempts++
 			if failedAttempts < maxReadAttempts {

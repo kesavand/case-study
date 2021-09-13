@@ -2,16 +2,29 @@ package utils
 
 import (
 	"context"
+	"fmt"
+	"math/rand"
 	"os"
+	"strconv"
 	"sync"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 )
 
 type UserInfo struct {
-	Name      string `json:"name"`
-	Age       int    `json:"age"`
-	CardNo    string `json:"cardno"`
-	Timestamp string `json:"timestamp"`
+	gorm.Model    `json:"-"`
+	Name          string `json:"name"`
+	Age           int    `json:"age"`
+	EmployeeID    string `json:"employeeid"`
+	CardNo        string `json:"cardnumber"`
+	CardSwipeTime string `json:"cardswipetime"`
 }
+
+var userIdx = 0
+var maxUserCount = 10
+var testUsers map[int]*UserInfo
 
 //WaitForExit waits on an exit channel until error or an interrupt is received
 func Wait(exitChannel chan error, cancel context.CancelFunc) error {
@@ -28,11 +41,11 @@ type Parameter struct {
 
 //New creates empty bag
 func New() *Parameter {
-	bag := &Parameter{
+	param := &Parameter{
 		parameters: &sync.Map{},
 	}
 
-	return bag
+	return param
 
 }
 
@@ -57,4 +70,38 @@ func (p *Parameter) ReadString(name string, defaultVal string) (string, bool) {
 	}
 
 	return val.(string), true
+}
+
+func getRandomNo(min int, max int) int {
+	rand.Seed(time.Now().UnixNano())
+
+	return (rand.Intn(max-min+1) + min)
+}
+
+func GenerateTestUsers() {
+	testUsers = make(map[int]*UserInfo)
+
+	for i := 0; i <= maxUserCount; i++ {
+		testUser := new(UserInfo)
+		testUser.Name = fmt.Sprintf("USER-" + strconv.Itoa(i))
+		testUser.Age = getRandomNo(20, 100)
+		testUser.EmployeeID = strconv.Itoa(i)
+		id := uuid.New()
+		testUser.CardNo = id.String()
+		testUsers[i] = testUser
+		fmt.Printf("User is %v", testUser)
+
+	}
+}
+
+func GetUserInfo(t time.Time) *UserInfo {
+	fmt.Printf("K7>>>>the index is %d  %s\n", userIdx, t.String())
+	if userIdx > maxUserCount {
+		userIdx = 0
+	}
+	idx := userIdx
+	testUsers[userIdx].CardSwipeTime = t.String()
+	userIdx++
+	return testUsers[idx]
+
 }
