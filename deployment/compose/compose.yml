@@ -6,7 +6,7 @@ services:
       - TEST_ENV
     image: "evnt-producer:0.1"
     environment:
-            - ALLOW_ANONYMOUS_LOGIN=kafka:9092
+            - KAFKA_ENDPOINT=kafka:9092
     command: /app/evnt-producer
     depends_on:
       kafka:
