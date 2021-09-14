@@ -1,0 +1,4 @@
+name: evnt-rcvr
+description: A Helm chart for evnt-rcvr
+version: 0.0.1
+apiVersion: v1

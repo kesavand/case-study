@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evnt-producer-deployment
+spec:
+  selector:
+    matchLabels:
+      app: evnt-producer
+  replicas: {{ .Values.replicaCount }} # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: evnt-producer
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.name }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+          - "/app/evnt-producer"
+        env:
+          - name: KAFKA_ENDPOINT
+            value: "{{ .Values.services.kafka.endpoint }}"

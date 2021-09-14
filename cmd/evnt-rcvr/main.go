@@ -31,9 +31,9 @@ func startProcess() error {
 
 	opts := utils.New()
 
-	dh := datahandler.NewDatahandler()
+	dh := datahandler.NewDatahandler(opts)
 
-	go apihandler.StartApiHandler(ctx, exitChannel)
+	go apihandler.StartApiHandler(ctx, opts, exitChannel)
 
 	event := eventshandler.NewEvntHandler()
 	go event.StartConsumer(ctx, opts, exitChannel, dh)

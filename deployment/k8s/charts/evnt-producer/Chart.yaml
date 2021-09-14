@@ -1,0 +1,4 @@
+name: evnt-producer
+description: A Helm chart for evnt-producer
+version: 0.0.1
+apiVersion: v1

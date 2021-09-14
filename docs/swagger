@@ -1,0 +1,26 @@
+swagger: '2.0'
+info:
+  description: defaultDescription
+  version: '0.1'
+  title: defaultTitle
+paths:
+  /users:
+    get:
+      produces:
+        - text/plain
+      parameters:
+        - name: name
+          in: query
+          required: false
+          type: string
+          x-example: USER-0
+        - name: age
+          in: query
+          required: false
+          type: string
+          x-example: '85'
+      responses:
+        '200':
+          description: Definition generated from Swagger Inspector
+          schema:
+            type: string

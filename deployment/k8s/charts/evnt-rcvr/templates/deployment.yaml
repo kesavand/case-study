@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evnt-rcvr-deployment
+spec:
+  selector:
+    matchLabels:
+      app: evnt-rcvr
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: evnt-rcvr
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.name }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - name: http
+            containerPort: 8000
+        args:
+          - "/app/evnt-rcvr"
+        env:
+          - name: DB_END_POINT
+            value: "{{ .Values.services.db.endpoint }}"
+          - name: DB_CREDENTIALS
+            value: "{{ .Values.services.db.credentials }}"
+          - name: KAFKA_ENDPOINT
+            value: "{{ .Values.services.kafka.endpoint }}"

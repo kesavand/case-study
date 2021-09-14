@@ -15,11 +15,11 @@ type apihandler struct {
 	dh datahandler.DataHandlerInterface
 }
 
-func StartApiHandler(ctx context.Context, exitChannel chan error) {
+func StartApiHandler(ctx context.Context, params *utils.Parameter, exitChannel chan error) {
 	fmt.Println("starting api handler")
 
 	aph := &apihandler{
-		dh: datahandler.NewDatahandler(),
+		dh: datahandler.NewDatahandler(params),
 	}
 
 	router := mux.NewRouter()

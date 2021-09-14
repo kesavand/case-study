@@ -21,16 +21,6 @@ GOLANGCI_LINT_BIN_PATH   ?= bin/golangci-lint
 
 default: build
 
-help:
-	@echo "Usage: make [<target>]"
-	@echo "where available targets are:"
-	@echo
-	@echo "build                : Build PADM and PADM-DIAG binary"
-	@echo "build-docker         : Build PADM and PADM-DIAG docker image"
-	@echo "help                 : Print this help"
-	@echo "test                 : Run unit tests, if any"
-	@echo "dmi-mock             : Generates mock for DMI"
-	@echo
 
 build:
 	mkdir -p bin

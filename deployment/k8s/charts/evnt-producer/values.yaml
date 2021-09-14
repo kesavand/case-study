@@ -1,0 +1,9 @@
+replicaCount: 1
+name: evnt-producer
+image:
+  name: "localhost:5000/evnt-producer:0.1"
+  pullPolicy: Always
+
+services:
+  kafka:
+    endpoint: "case-study-kafka-0.case-study-kafka-headless.case-study.svc.cluster.local:9092"

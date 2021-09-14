@@ -13,7 +13,9 @@ import (
 )
 
 const (
-	dbName = "user_info"
+	dbName        = "user_info"
+	dbEndPoint    = "DB_END_POINT"
+	dbCredentials = "DB_CREDENTIALS"
 )
 
 type Datahandler struct {
@@ -31,13 +33,18 @@ type DataHandlerInterface interface {
 var once sync.Once
 var db *gorm.DB
 
-func NewDBConnection() *gorm.DB {
+func NewDBConnection(params *utils.Parameter) *gorm.DB {
 	once.Do(func() { // <-- atomic, does not allow repeating
 
-		dsn := "root@tcp(mariadb:3306)/?parseTime=true"
+		dbEndpoint, _ := params.ReadString(dbEndPoint, "mariadb:3306")
+		dbCredentials, _ := params.ReadString(dbCredentials, "root@")
+		dsn := fmt.Sprintf("%s@tcp(%s)/?parseTime=true", dbCredentials, dbEndpoint)
+
+		fmt.Println("The DB endpoint is ", dsn)
+
+		//dsn := "root@tcp(mariadb:3306)/?parseTime=true"
 
 		sqlDB, err := sql.Open("mysql", dsn)
-
 		if err != nil {
 			panic(err)
 		}
@@ -75,10 +82,10 @@ func NewDBConnection() *gorm.DB {
 	return db
 }
 
-func NewDatahandler() DataHandlerInterface {
+func NewDatahandler(params *utils.Parameter) DataHandlerInterface {
 
 	dh := &Datahandler{
-		db: NewDBConnection(),
+		db: NewDBConnection(params),
 	}
 
 	return dh

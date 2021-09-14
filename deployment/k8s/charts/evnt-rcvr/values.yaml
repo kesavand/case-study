@@ -1,0 +1,13 @@
+replicaCount: 1
+port: 8000
+name: evnt-rcvr
+image:
+  name: "localhost:5000/evnt-rcvr:0.1"
+  pullPolicy: Always
+
+services:
+  db:
+    endpoint: "case-study-db-mariadb.case-study.svc.cluster.local:3306"
+    credentials: "root:Xgq3pdXxCf"
+  kafka:
+    endpoint: "case-study-kafka.case-study.svc.cluster.local:9092" 
