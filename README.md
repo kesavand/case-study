@@ -49,7 +49,7 @@ stop:
 |----------------------|-------------------------------------|--------------|---------------------------|
 
 Use the below endpoint to verify results
-http://192.168.49.2:30036
+http://192.168.49.2:30036/users
 
 # Swagger documentation is present in docs/swagger
 
