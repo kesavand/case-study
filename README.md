@@ -17,7 +17,7 @@ The microservices can be started/stopped in docker compose by using the below co
   
  # Deployment in minikube
  The microservices can be deployed in k8s environment by below steps
- start:
+# start:
         helm repo add bitnami https://charts.bitnami.com/bitnami
 	
         helm upgrade --install case-study-kafka  --namespace case-study --create-namespace bitnami/kafka --wait
@@ -34,9 +34,10 @@ The microservices can be started/stopped in docker compose by using the below co
        
        helm upgrade --install evnt-rcvr  --namespace case-study ./deployment/k8s/charts/evnt-rcvr/ --set services.db.credentials=root:<ROOT_PASSWORD> --wait
 
-stop:
+# stop:
         helm ls --namespace case-study --short --all | xargs -L1 --no-run-if-empty helm delete --namespace case-study
-        kubectl delete namespace case-study
+  
+       kubectl delete namespace case-study
         
  # Verify results by following the below commands
  minikube service list
