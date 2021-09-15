@@ -44,6 +44,7 @@ The microservices can be started/stopped in docker compose by using the below co
         
  # Verify results by following the below commands
  minikube service list
+ 
 |----------------------|-------------------------------------|--------------|---------------------------|
 |      NAMESPACE       |                NAME                 | TARGET PORT  |            URL            |
 |----------------------|-------------------------------------|--------------|---------------------------|
