@@ -16,7 +16,7 @@ The microservices can be started/stopped in docker compose by using the below co
   docker-compose -f compose.yml down 
   
   # Verify results by hitting the endpoint 
-    http://localhost:8000/users
+    example : http://localhost:8000/users
   
  # Deployment in minikube
  The microservices can be deployed in k8s environment by below steps
@@ -60,8 +60,8 @@ The microservices can be started/stopped in docker compose by using the below co
 | kubernetes-dashboard | kubernetes-dashboard                | No node port |
 |----------------------|-------------------------------------|--------------|---------------------------|
 
-Use the below endpoint to verify results
-http://192.168.49.2:30036/users
+Use the end point exposed by evnt-rcvr to verify results
+example : http://192.168.49.2:30036/users
 
 Swagger documentation is present in docs/swagger
 
