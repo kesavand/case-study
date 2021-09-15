@@ -6,6 +6,9 @@
 
 The microservices can be deployed by both docker-compose and helm charts
 
+# Build docker images
+	make build-docker
+
 # Deployment using docker compose 
 The docker compose file is in deploments/compose 
 The microservices can be started/stopped in docker compose by using the below command
@@ -59,6 +62,6 @@ The microservices can be started/stopped in docker compose by using the below co
 Use the below endpoint to verify results
 http://192.168.49.2:30036/users
 
-# Swagger documentation is present in docs/swagger
+Swagger documentation is present in docs/swagger
 
 
